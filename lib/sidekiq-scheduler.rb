@@ -14,6 +14,9 @@ Sidekiq.configure_server do |config|
     enabled = enabled.nil? ? config.options.fetch(:enabled, true) : enabled
 
     scheduler = config.options.fetch(:scheduler, {})
+    
+    schedule = config.options.fetch(:schedule, nil)
+    schedule = schedule.deep_stringify_keys unless schedule.nil?
 
     listened_queues_only = Sidekiq::Scheduler.listened_queues_only
     listened_queues_only = listened_queues_only.nil? ? scheduler[:listened_queues_only] : listened_queues_only
@@ -21,7 +24,7 @@ Sidekiq.configure_server do |config|
     scheduler_options = {
       dynamic:   dynamic,
       enabled:   enabled,
-      schedule:  config.options.fetch(:schedule, nil).deep_stringify_keys,
+      schedule:  schedule,
       listened_queues_only: listened_queues_only
     }
 
